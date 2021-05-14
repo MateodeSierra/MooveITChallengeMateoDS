@@ -1,3 +1,12 @@
-puts "Hello World"
-puts "Im Mateo de Sierra"
-name = gets
+require 'socket'
+
+server = TCPServer.new('localhost', 2452)
+
+puts ""
+
+loop do
+  client = server.accept
+  client.puts "Hello !"
+  client.puts "Time is #{Time.now} GMT" 
+  client.close
+end
