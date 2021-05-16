@@ -2,7 +2,7 @@ require 'socket'
 require 'time'
 
 class StoredKey
-    @@next_casNumber = 0
+    @@next_cas_number = 0
 
     def initialize(flag, expiry, length, value)
         @length = length
@@ -10,8 +10,8 @@ class StoredKey
         @value = value
         @flag = flag
         @creation_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
-        @casNumber = @@next_casNumber + 1
-        @@next_casNumber += 1
+        @cas_number = @@next_cas_number + 1
+        @@next_cas_number += 1
     end
 
     def length
@@ -26,7 +26,7 @@ class StoredKey
         @value
     end
 
-    def creationTime
+    def creation_time
         @creation_time
     end
 
@@ -34,22 +34,56 @@ class StoredKey
         @flag
     end
 
+    def cas_number
+        @cas_number
+    end
+
 end
 
 #methods
 
-def get(list1, hash1)
-    #recibe una o mas keys y devuelve todo lo encontrado
-    #tiene que recibir un array de keys, y tener un foreach del array y buscar las keys, agregandolas a otro array
-    final_list = array.new
-    list1.each do |n|
-        final_list.push(hash1[n])
+def isExpired(key)
+    current_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+    if ((key.creation_time + key.expiry) >= current_time)
+        return false
     end
-    return final_list
+    return true
 end
 
-def gets()
+def valueGetter(key, client)
+    client.print("VALUE ")
+    client.print(key + " ")
+    client.print(HASH_DATA[key].flag + " ")
+    client.puts(HASH_DATA[key].length + "\r")
+    client.puts(HASH_DATA[key].value)
+end
+
+def valueGetterCas(key, client)
+    client.print("VALUE ")
+    client.print(key + " ")
+    client.print(HASH_DATA[key].flag + " ")
+    client.print(HASH_DATA[key].length + " ")
+    client.puts(HASH_DATA[key].cas_number.to_s + "\r")
+    client.puts(HASH_DATA[key].value)
+    
+end
+
+
+def get(list1, hash1, client)
+    #recibe una o mas keys y devuelve todo lo encontrado
+    #tiene que recibir un array de keys, y tener un foreach del array y buscar las keys, agregandolas a otro array
+    list1.each do |n|
+        valueGetter(hash1[n], client)
+    end
+    return
+end
+
+def gets(list1, hash1, client)
     #alternativa a get, devuelve el numero cas ademas del value el flag y el largo
+    list1.each do |n|
+        valueGetterCas(hash1[n], client)
+    end
+    return
 end
 
 def set(key, value, hash1)
@@ -109,13 +143,14 @@ loop do
   loop do
     name = client.gets.chomp
     list1 = name.split(" ")
-    client.puts(list1[0] +"\r")
-    client.puts(list1[1] +"\r")
-    client.puts(list1[2] +"\r")
-    set(list1[1], list1[2], HASH_DATA)
-    client.puts(HASH_DATA["primerkey"])
-    clase1 = StoredKey.new(1,1,1,1)
-    client.puts(clase1.length)
+    value = client.gets.chomp
+    clase1 = StoredKey.new(list1[2],list1[3].to_i,list1[4],value)
+    set(list1[1], clase1, HASH_DATA)
+    client.puts(HASH_DATA["foo"].value + "\r")
+    client.puts(valueGetterCas("foo", client))
+
+    sleep(5)
+
   end
 
 end
