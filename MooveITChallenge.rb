@@ -1,9 +1,51 @@
 require 'socket'
+require 'time'
+
+class StoredKey
+    @@next_casNumber = 0
+
+    def initialize(flag, expiry, length, value)
+        @length = length
+        @expiry = expiry
+        @value = value
+        @flag = flag
+        @creation_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+        @casNumber = @@next_casNumber + 1
+        @@next_casNumber += 1
+    end
+
+    def length
+        @length
+    end
+
+    def expiry
+        @expiry
+    end
+
+    def value
+        @value
+    end
+
+    def creationTime
+        @creation_time
+    end
+
+    def flag
+        @flag
+    end
+
+end
 
 #methods
 
-def get(number1, number2, hash1)
+def get(list1, hash1)
     #recibe una o mas keys y devuelve todo lo encontrado
+    #tiene que recibir un array de keys, y tener un foreach del array y buscar las keys, agregandolas a otro array
+    final_list = array.new
+    list1.each do |n|
+        final_list.push(hash1[n])
+    end
+    return final_list
 end
 
 def gets()
@@ -16,10 +58,12 @@ end
 
 def add(key, value, dir)
     #crea un nuevo key en el diccionario solo si no exisitia otro, si ya exisitia otro igual lo adelanta
+    #busca si existe el key, si devuelve null lo guarda
 end
 
 def replace()
     #solo agrega key si ya existe en el diccionario
+    #busca si existe el key, si existe lo replacea
 end
 
 def append()
@@ -70,6 +114,8 @@ loop do
     client.puts(list1[2] +"\r")
     set(list1[1], list1[2], HASH_DATA)
     client.puts(HASH_DATA["primerkey"])
+    clase1 = StoredKey.new(1,1,1,1)
+    client.puts(clase1.length)
   end
 
 end
