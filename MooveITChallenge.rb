@@ -2,7 +2,7 @@ require 'socket'
 
 #methods
 
-def get(number1, number2, dic1)
+def get(number1, number2, hash1)
     #recibe una o mas keys y devuelve todo lo encontrado
 end
 
@@ -10,8 +10,8 @@ def gets()
     #alternativa a get, devuelve el numero cas ademas del value el flag y el largo
 end
 
-def set(key, value, dir)
-    #crea la key en el diccionario, los items nuevos estan arriba en el LRU
+def set(key, value, hash1)
+    hash1[key] = value
 end
 
 def add(key, value, dir)
@@ -34,7 +34,7 @@ def cas()
     #check and set, guarda data, pero solo si fuiste vos el ultimo que la updateo desde que vos la leiste 
 end
 
-
+HASH_DATA = {}
 
 SERVER_PORT = 2452
 server = TCPServer.new('localhost', SERVER_PORT)
@@ -49,6 +49,7 @@ loop do
   client.puts("You have connected to the this Memcached server via port #{SERVER_PORT}." \
   "Please enter one of the implemented commands, if you enter " \
   "one of the associated numbers an example on how to use it will be printed\r")
+
   client.puts("Available commands:\r")
   client.puts("1. get\r")
   client.puts("2. gets\r")
@@ -58,7 +59,17 @@ loop do
   client.puts("6. append\r")
   client.puts("7. prepend\r")
   client.puts("8. cas\r")
+  client.puts("9. Exit client\r")
   client.puts("Your choice: \r")
-  name = gets
-  client.close
+
+  loop do
+    name = client.gets.chomp
+    list1 = name.split(" ")
+    client.puts(list1[0] +"\r")
+    client.puts(list1[1] +"\r")
+    client.puts(list1[2] +"\r")
+    set(list1[1], list1[2], HASH_DATA)
+    client.puts(HASH_DATA["primerkey"])
+  end
+
 end
