@@ -38,6 +38,22 @@ class StoredKey
         @cas_number
     end
 
+    def flag=(flag)
+        @flag = flag
+    end
+
+    def value=(value)
+        @value = value
+    end
+
+    def  expiry=(expiry)
+        @expiry = expiry
+    end
+
+    def updateCreationTime
+        @creation_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+    end
+
 end
 
 #methods
@@ -70,8 +86,6 @@ end
 
 
 def get(list1, hash1, client)
-    #recibe una o mas keys y devuelve todo lo encontrado
-    #tiene que recibir un array de keys, y tener un foreach del array y buscar las keys, agregandolas a otro array
     list1.each do |n|
         valueGetter(hash1[n], client)
     end
@@ -79,7 +93,6 @@ def get(list1, hash1, client)
 end
 
 def gets(list1, hash1, client)
-    #alternativa a get, devuelve el numero cas ademas del value el flag y el largo
     list1.each do |n|
         valueGetterCas(hash1[n], client)
     end
@@ -90,22 +103,36 @@ def set(key, value, hash1)
     hash1[key] = value
 end
 
-def add(key, value, dir)
-    #crea un nuevo key en el diccionario solo si no exisitia otro, si ya exisitia otro igual lo adelanta
-    #busca si existe el key, si devuelve null lo guarda
+def add(key, value, hash1)
+    if (hash1[key] = null)
+        hash1[key] = value
+    end
 end
 
-def replace()
-    #solo agrega key si ya existe en el diccionario
-    #busca si existe el key, si existe lo replacea
+def replace(key, value, hash1)
+    if (hash1[key] != null)
+        hash1[key] = value
+    end
 end
 
-def append()
+def append(oldkey, newvalue, hash1)
     #agrega data al final de la data guardada, no se pasa del limite de caracteres
+    hash1.each do |key,value|
+        if (key == oldkey)
+            hash1[key] = oldkey + key
+        end
+    end
+    return
 end
 
-def prepend()
+def prepend(oldkey, newvalue, hash1)
     #lo mismo que append pero antes de la data existente
+    hash1.each do |key,value|
+        if (key == oldkey)
+            hash1[key] = key + oldkey
+        end
+    end
+    return
 end
 
 def cas()
