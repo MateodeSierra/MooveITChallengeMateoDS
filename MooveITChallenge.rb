@@ -58,6 +58,33 @@ end
 
 #methods
 
+def is_data_valid(list1, client)
+    if list1.length() == 5
+        if (list1[0].nill? == false) && (list1[1].nill? == false) && (list1[2].nill? == false) && (list1[3].nill? == false) && (list1[4].nill? == false)
+            if (list1[0].is_a? String) && (list1[1].is_a? String) && (list1[2].is_a? Numeric) && (list1[3].is_a? Numeric) && (list1[4].is_a? Numeric)
+                if (list1[1].length <= list1[4])
+                    return true
+                end
+            end
+        end
+    elsif list1.length() == 2
+        if (list1[0].nill? == false) && (list1[1].nill? == false)
+            if (list1[0].is_a? String) && (list1[0].is_a? String)
+                return true
+            end
+        end
+    elsif list1.length() == 1
+        if (list1[0].is_a? String)
+            return true
+        end
+    end
+end
+
+
+
+    
+
+
 def isExpired(key)
     current_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
     if ((key.creation_time + key.expiry) >= current_time)
@@ -81,7 +108,6 @@ def valueGetterCas(key, client)
     client.print(HASH_DATA[key].length + " ")
     client.puts(HASH_DATA[key].cas_number.to_s + "\r")
     client.puts(HASH_DATA[key].value)
-    
 end
 
 
@@ -135,8 +161,12 @@ def prepend(oldkey, newvalue, hash1)
     return
 end
 
-def cas()
+def cas(key, value, hash1)
     #check and set, guarda data, pero solo si fuiste vos el ultimo que la updateo desde que vos la leiste 
+    #mientras que no implemente muchos clientes esto es solo un replace
+    if (hash1[key] != null)
+        hash1[key] = value
+    end
 end
 
 HASH_DATA = {}
@@ -158,26 +188,25 @@ loop do
   client.puts("Available commands:\r")
   client.puts("1. get\r")
   client.puts("2. gets\r")
-  client.puts("3. set\r")
-  client.puts("4. add\r")
-  client.puts("5. replace\r")
-  client.puts("6. append\r")
-  client.puts("7. prepend\r")
+  client.puts("3. set\r")   #
+  client.puts("4. add\r")  #
+  client.puts("5. replace\r")  #
+  client.puts("6. append\r")  #
+  client.puts("7. prepend\r")   #
   client.puts("8. cas\r")
   client.puts("9. Exit client\r")
   client.puts("Your choice: \r")
 
   loop do
-    name = client.gets.chomp
-    list1 = name.split(" ")
+    option = client.gets.chomp
+    list1 = option.split(" ")
     value = client.gets.chomp
     clase1 = StoredKey.new(list1[2],list1[3].to_i,list1[4],value)
     set(list1[1], clase1, HASH_DATA)
     client.puts(HASH_DATA["foo"].value + "\r")
     client.puts(valueGetterCas("foo", client))
-
     sleep(5)
-
   end
 
 end
+
