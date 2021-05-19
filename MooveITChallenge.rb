@@ -200,8 +200,8 @@ def handle_command(client_command, hash1, client)
             else
                 client.puts("Connection is closing in 5 seconds\r")
                 sleep(5)
-                return true
                 client.close
+                return true
             end
         end
     end
@@ -316,11 +316,11 @@ loop do
   client.puts("Available commands:\r")
   client.puts("1. get\r")
   client.puts("2. gets\r")
-  client.puts("3. set\r")   #
-  client.puts("4. add\r")  #
-  client.puts("5. replace\r")  #
-  client.puts("6. append\r")  #
-  client.puts("7. prepend\r")   #
+  client.puts("3. set\r")   
+  client.puts("4. add\r")  
+  client.puts("5. replace\r")  
+  client.puts("6. append\r")  
+  client.puts("7. prepend\r")  
   client.puts("8. cas\r")
   client.puts("9. Exit client\r")
   client.puts("Your choice: \r")
