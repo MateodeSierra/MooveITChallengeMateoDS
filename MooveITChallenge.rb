@@ -104,29 +104,35 @@ end
     
 
 
-def isExpired(key)
+def isExpired(key, client)
     current_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
-    if ((key.creation_time + key.expiry) >= current_time)
+    if ((HASH_DATA[key].creation_time.to_i + HASH_DATA[key].expiry.to_i) >= current_time)
         return false
     end
+    HASH_DATA.delete(key)
+    client.puts("Could not find a value for key '#{key}'\r")
     return true
 end
 
 def valueGetter(key, client)
-    client.print("VALUE ")
-    client.print(key + " ")
-    client.print(HASH_DATA[key].flag + " ")
-    client.puts(HASH_DATA[key].length + "\r")
-    client.puts(HASH_DATA[key].value + "\r")
+    if (isExpired(key, client) == false)
+        client.print("VALUE ")
+        client.print(key + " ")
+        client.print(HASH_DATA[key].flag + " ")
+        client.puts(HASH_DATA[key].length + "\r")
+        client.puts(HASH_DATA[key].value + "\r")
+    end
 end
 
 def valueGetterCas(key, client)
-    client.print("VALUE ")
-    client.print(key + " ")
-    client.print(HASH_DATA[key].flag + " ")
-    client.print(HASH_DATA[key].length + " ")
-    client.puts(HASH_DATA[key].cas_number.to_s + "\r")
-    client.puts(HASH_DATA[key].value + "\r")
+    if (isExpired(key, client) == false)
+        client.print("VALUE ")
+        client.print(key + " ")
+        client.print(HASH_DATA[key].flag + " ")
+        client.print(HASH_DATA[key].length + " ")
+        client.puts(HASH_DATA[key].cas_number.to_s + "\r")
+        client.puts(HASH_DATA[key].value + "\r")
+    end
 end
 
 def handle_command(client_command, hash1, client)
@@ -309,21 +315,8 @@ puts("To take down the server press CTRL + C")
 
 loop do
   client = server.accept
-  client.puts("You have connected to the this Memcached server via port #{SERVER_PORT}." \
-  "Please enter one of the implemented commands, if you enter " \
-  "one of the associated numbers an example on how to use it will be printed\r")
-
-  client.puts("Available commands:\r")
-  client.puts("1. get\r")
-  client.puts("2. gets\r")
-  client.puts("3. set\r")   
-  client.puts("4. add\r")  
-  client.puts("5. replace\r")  
-  client.puts("6. append\r")  
-  client.puts("7. prepend\r")  
-  client.puts("8. cas\r")
-  client.puts("9. Exit client\r")
-  client.puts("Your choice: \r")
+  client.puts("You have connected to the this Memcached server via port #{SERVER_PORT}.\n\r" \
+  "Enter your command\r")
 
   loop do
     option = client.gets.strip
