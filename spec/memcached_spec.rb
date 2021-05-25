@@ -1,5 +1,22 @@
-require_relative 'lib/memcached'
+require_relative '..\lib\memcached'
 
-describe “expired” do
-   it “checks if a key expired”
-  end
+describe "#memcached" do
+
+   before do
+      puts.("asd")
+   end
+   
+   
+   describe isExpired(key,client) do
+      it “checks if a key expired”
+   end 
+
+end
+
+
+   
+
+
+
+
+
