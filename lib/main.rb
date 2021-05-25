@@ -15,10 +15,8 @@ COMMANDS_THAT_NEED_TWO = [
 SERVER_PORT = 2452
 
 server = TCPServer.new('localhost', SERVER_PORT)
-#necesito crear el array o diccionario a donde van a ir los datos
 
 puts("MooveIT Challenge, by Mateo de Sierra")
-puts(ENV['RACK_ENV'])
 puts("Server is online, listening on port #{SERVER_PORT}")
 puts("To take down the server press CTRL + C")
 
@@ -42,8 +40,10 @@ loop do
             client.puts("Connection is closing in 5 seconds\r")
             break
         else
-            result.each do |n|
-                client.puts(n)
+            if (result.nil? == false)
+                result.each do |n|
+                    client.puts(n)
+                end
             end
         end
     end
