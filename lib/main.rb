@@ -36,7 +36,7 @@ loop do
                 command_parts.append(value)
             end
             result = handle_command(command_parts, HASH_DATA)
-            if (result[0] == "Connection is closing in 5 seconds\r")
+            if (result.nil? == false && result[0] == "Connection is closing in 5 seconds\r")
                 client.puts("Connection is closing in 5 seconds\r")
                 sleep(5)
                 client.close

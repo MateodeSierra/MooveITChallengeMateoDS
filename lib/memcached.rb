@@ -135,6 +135,10 @@ def valueGetterCas(key)
     return result
 end
 
+def error_message_command(command_string)
+    return ("Error, wrong number of arguments for the '#{command_string}' command\r")
+end
+
 def handle_command(client_command, data_hash)
     command = client_command[0]
     arguments = client_command[1..-1]
@@ -143,7 +147,7 @@ def handle_command(client_command, data_hash)
     if COMMANDS.include?(command)
         if command == "get"
             if arguments.length < 1
-                log_message.push("Error, wrong number of arguments for the '#{command}' command\r")
+                log_message.push(error_message_command("get"))
                 return log_message
             else
                 values_to_add = (get(arguments, data_hash))
@@ -153,7 +157,7 @@ def handle_command(client_command, data_hash)
             end
         elsif command == "gets"
             if arguments.length < 1
-                log_message.push("Error, wrong number of arguments for the '#{command}' command\r")
+                log_message.push(error_message_command("gets"))
                 return log_message
             else
                 values_to_add = (gets(arguments, data_hash))
@@ -163,7 +167,7 @@ def handle_command(client_command, data_hash)
             end
         elsif command == "set"
             if arguments.length != 5
-                log_message.push("Error, wrong number of arguments for the '#{command}' command\r")
+                log_message.push(error_message_command("set"))
                 return log_message
             else
                 values_to_add = (set(arguments[0], StoredKey.new(arguments[1],arguments[2], arguments[3], arguments[4]), data_hash))
@@ -173,7 +177,7 @@ def handle_command(client_command, data_hash)
             end
         elsif command == "add"
             if arguments.length != 5
-                log_message.push("Error, wrong number of arguments for the '#{command}' command\r")
+                log_message.push(error_message_command("add"))
                 return log_message
             else
                 values_to_add = (add(arguments[0], StoredKey.new(arguments[1],arguments[2], arguments[3], arguments[4]), data_hash)) 
@@ -183,7 +187,7 @@ def handle_command(client_command, data_hash)
             end
         elsif command == "replace"
             if arguments.length != 5
-                log_message.push("Error, wrong number of arguments for the '#{command}' command\r")
+                log_message.push(error_message_command("replace"))
                 return log_message
             else
                 values_to_add = (replace(arguments[0], StoredKey.new(arguments[1],arguments[2], arguments[3], arguments[4]), data_hash))
@@ -193,7 +197,7 @@ def handle_command(client_command, data_hash)
             end
         elsif command == "append"
             if arguments.length != 5
-                log_message.push("Error, wrong number of arguments for the '#{command}' command\r")
+                log_message.push(error_message_command("append"))
                 return log_message
             else
                 values_to_add = (append(arguments[0], StoredKey.new(arguments[1],arguments[2], arguments[3], arguments[4]), data_hash))
@@ -203,7 +207,7 @@ def handle_command(client_command, data_hash)
             end
         elsif command == "prepend"
             if arguments.length != 5
-                log_message.push("Error, wrong number of arguments for the '#{command}' command\r")
+                log_message.push(error_message_command("prepend"))
                 return log_message
             else
                 values_to_add = (prependd(arguments[0], StoredKey.new(arguments[1],arguments[2], arguments[3], arguments[4]), data_hash))
@@ -213,7 +217,7 @@ def handle_command(client_command, data_hash)
             end
         elsif command == "cas"
             if arguments.length != 5
-                log_message.push("Error, wrong number of arguments for the '#{command}' command\r")
+                log_message.push(error_message_command("cas"))
                 return log_message
             else
                 values_to_add = (cas(arguments[0], StoredKey.new(arguments[1],arguments[2], arguments[3], arguments[4]), data_hash))
@@ -224,7 +228,7 @@ def handle_command(client_command, data_hash)
             end
         elsif command == "exit"
             if arguments.length != 0
-                log_message.push("Error, '#{command}' command needs no arguments.\r")
+                log_message.push(error_message_command("exit"))
                 return log_message
             else
                 log_message.push("Connection is closing in 5 seconds\r")
