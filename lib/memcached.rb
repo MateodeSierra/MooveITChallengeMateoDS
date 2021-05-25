@@ -114,100 +114,102 @@ def isExpired(key, client)
     return true
 end
 
-def valueGetter(key, client)
+def valueGetter(key)
+    result = Array.new
     if (isExpired(key, client) == false)
-        client.print("VALUE ")
-        client.print(key + " ")
-        client.print(HASH_DATA[key].flag + " ")
-        client.puts(HASH_DATA[key].length + "\r")
-        client.puts(HASH_DATA[key].value + "\r")
+        result.push("VALUE ")
+        result.push(key + " ")
+        result.push(HASH_DATA[key].flag + " ")
+        result.push(HASH_DATA[key].length + "\r")
+        result.push(HASH_DATA[key].value + "\r")
     end
+    return result
 end
 
-def valueGetterCas(key, client)
+def valueGetterCas(key)
+    result = Array.new
     if (isExpired(key, client) == false)
-        client.print("VALUE ")
-        client.print(key + " ")
-        client.print(HASH_DATA[key].flag + " ")
-        client.print(HASH_DATA[key].length + " ")
-        client.puts(HASH_DATA[key].cas_number.to_s + "\r")
-        client.puts(HASH_DATA[key].value + "\r")
+        result.push("VALUE ")
+        result.push(key + " ")
+        result.push(HASH_DATA[key].flag + " ")
+        result.push(HASH_DATA[key].length + " ")
+        result.push(HASH_DATA[key].cas_number.to_s + "\r")
+        result.push(HASH_DATA[key].value + "\r")
     end
+    return result
 end
 
-def handle_command(client_command, hash1, client)
-    command_parts = client_command.split
+def handle_command(client_command, data_hash)
     command = command_parts[0]
     arguments = command_parts[1..-1]
+    log_message = Array.new
     if COMMANDS.include?(command)
         if command == "get"
             if arguments.length < 1
-                client.puts("Error, wrong number of arguments for the '#{command}' command\r")
+                log_message.push("Error, wrong number of arguments for the '#{command}' command\r")
+                return log_message
             else
-                get(arguments, hash1, client)
+                log_message.push(get(arguments, data_hash))
             end
         elsif command == "gets"
             if arguments.length < 1
-                client.puts("Error, wrong number of arguments for the '#{command}' command\r")
+                log_message.push("Error, wrong number of arguments for the '#{command}' command\r")
+                return log_message
             else
-                gets(arguments, hash1, client)
+                log_message.push(gets(arguments, data_hash))
             end
         elsif command == "set"
-            value = client.gets.strip
-            arguments.append(value)
             if arguments.length != 5
-                client.puts("Error, wrong number of arguments for the '#{command}' command\r")
+                log_message.push("Error, wrong number of arguments for the '#{command}' command\r")
+                return log_message
             else
-                set(arguments[0], StoredKey.new(arguments[1],arguments[2], arguments[3], arguments[4]), hash1, client) #aca debe pasar un objeto key no solo el value
+                log_message.push(set(arguments[0], StoredKey.new(arguments[1],arguments[2], arguments[3], arguments[4]), data_hash)) 
             end
         elsif command == "add"
-            value = client.gets.strip
-            arguments.append(value)
             if arguments.length != 5
-                client.puts("Error, wrong number of arguments for the '#{command}' command\r")
+                log_message.push("Error, wrong number of arguments for the '#{command}' command\r")
+                return log_message
             else
-                add(arguments[0], StoredKey.new(arguments[1],arguments[2], arguments[3], arguments[4]), hash1, client) #aca debe pasar un objeto key no solo el value
+                log_message.push(add(arguments[0], StoredKey.new(arguments[1],arguments[2], arguments[3], arguments[4]), data_hash)) 
             end
         elsif command == "replace"
-            value = client.gets.strip
-            arguments.append(value)
             if arguments.length != 5
-                client.puts("Error, wrong number of arguments for the '#{command}' command\r")
+                log_message.push("Error, wrong number of arguments for the '#{command}' command\r")
+                return log_message
             else
-                replace(arguments[0], StoredKey.new(arguments[1],arguments[2], arguments[3], arguments[4]), hash1, client) #aca debe pasar un objeto key no solo el value
+                log_message.push(replace(arguments[0], StoredKey.new(arguments[1],arguments[2], arguments[3], arguments[4]), data_hash))
             end
         elsif command == "append"
-            value = client.gets.strip
-            arguments.append(value)
             if arguments.length != 5
-                client.puts("Error, wrong number of arguments for the '#{command}' command\r")
+                log_message.push("Error, wrong number of arguments for the '#{command}' command\r")
+                return log_message
             else
-                append(arguments[0], StoredKey.new(arguments[1],arguments[2], arguments[3], arguments[4]), hash1, client)
+                log_message.push(append(arguments[0], StoredKey.new(arguments[1],arguments[2], arguments[3], arguments[4]), data_hash))
             end
         elsif command == "prepend"
-            value = client.gets.strip
-            arguments.append(value)
             if arguments.length != 5
-                client.puts("Error, wrong number of arguments for the '#{command}' command\r")
+                log_message.push("Error, wrong number of arguments for the '#{command}' command\r")
+                return log_message
             else
-                prependd(arguments[0], StoredKey.new(arguments[1],arguments[2], arguments[3], arguments[4]), hash1, client)
+                log_message.push(prependd(arguments[0], StoredKey.new(arguments[1],arguments[2], arguments[3], arguments[4]), data_hash))
             end
         elsif command == "cas"
-            value = client.gets.strip
-            arguments.append(value)
             if arguments.length != 5
-                client.puts("Error, wrong number of arguments for the '#{command}' command\r")
+                log_message.push("Error, wrong number of arguments for the '#{command}' command\r")
+                return log_message
             else
-                cas(arguments[0], StoredKey.new(arguments[1],arguments[2], arguments[3], arguments[4]), hash1, client)
+                log_message.push(cas(arguments[0], StoredKey.new(arguments[1],arguments[2], arguments[3], arguments[4]), data_hash))
+                return log_message
             end
         elsif command == "exit"
             if arguments.length != 0
-                client.puts("Error, '#{command}' command needs no arguments.\r")
+                log_message.push("Error, '#{command}' command needs no arguments.\r")
+                return log_message
             else
-                client.puts("Connection is closing in 5 seconds\r")
                 sleep(5)
+                log_message.push("Connection is closing in 5 seconds\r")
                 client.close
-                return true
+                return log_message
             end
         end
     end
@@ -216,7 +218,7 @@ end
 def get(list1, hash1, client)
     list1.each do |n|
         if hash1[n].nil? == false
-            valueGetter(n, client)
+            valueGetter(n)
         else
             client.puts("Could not find a value for key '#{n}'\r")
         end
@@ -227,7 +229,7 @@ end
 def gets(list1, hash1, client)
     list1.each do |n|
         if hash1[n].nil? == false
-            valueGetter(n, client)
+            valueGetter(n)
         else
             client.puts("Could not find a value for key '#{n}'\r")
         end
@@ -259,7 +261,6 @@ def replace(key, value, hash1, client)
 end
 
 def append(oldkey, newvalue, hash1, client)
-    #agrega data al final de la data guardada, no se pasa del limite de caracteres
     hash1.each do |key,value|
         if (key == oldkey)
             hash1[key].value = value.value + newvalue.value
@@ -270,7 +271,6 @@ def append(oldkey, newvalue, hash1, client)
 end
 
 def prependd(oldkey, newvalue, hash1, client)
-    #lo mismo que append pero antes de la data existente
     hash1.each do |key,value|
         if (key == oldkey)
             hash1[key] = key + oldkey
@@ -281,8 +281,6 @@ def prependd(oldkey, newvalue, hash1, client)
 end
 
 def cas(key, value, hash1, client)
-    #check and set, guarda data, pero solo si fuiste vos el ultimo que la updateo desde que vos la leiste 
-    #mientras que no implemente muchos clientes esto es solo un replace
     if (hash1[key].nil? == false)
         hash1[key] = value
         client.puts("STORED\r")
