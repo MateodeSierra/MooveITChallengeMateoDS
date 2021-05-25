@@ -227,9 +227,7 @@ def handle_command(client_command, data_hash)
                 log_message.push("Error, '#{command}' command needs no arguments.\r")
                 return log_message
             else
-                sleep(5)
                 log_message.push("Connection is closing in 5 seconds\r")
-                client.close
                 return log_message
             end
         end
