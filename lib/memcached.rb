@@ -2,13 +2,9 @@ require 'socket'
 require 'time'
 
 class Command
-    def initialize(name, number_of_argument, client)
+    def initialize(name, number_of_argument)
         @name = name
         @number_of_argument = number_of_argument
-    end
-
-    def puts_error
-        client.puts("Error, wrong number of arguments for the '#{name}' command\r")
     end
 
     def number_of_argument
@@ -74,34 +70,6 @@ class StoredKey
     end
 
 end
-
-#methods
-
-def is_data_valid(list1, client)
-    if list1.length() == 5
-        if (list1[0].nil? == false) && (list1[1].nil? == false) && (list1[2].nil? == false) && (list1[3].nil? == false) && (list1[4].nil? == false)
-            if (list1[0].is_a? String) && (list1[1].is_a? String) && (list1[2].is_a? Numeric) && (list1[3].is_a? Numeric) && (list1[4].is_a? Numeric)
-                if (list1[1].length <= list1[4])
-                    return true
-                end
-            end
-        end
-    elsif list1.length() == 2
-        if (list1[0].nil? == false) && (list1[1].nil? == false)
-            if (list1[0].is_a? String) && (list1[0].is_a? String)
-                return true
-            end
-        end
-    elsif list1.length() == 1
-        if (list1[0].is_a? String)
-            return true
-        end
-    end
-end
-
-
-
-    
 
 
 def isExpired(key)
@@ -232,17 +200,17 @@ def handle_command(client_command, data_hash)
                 return log_message
             else
                 log_message.push("Connection is closing in 5 seconds\r")
-                return log_message
+                return true
             end
         end
     end
 end
 
-def get(list1, hash1)
+def get(list_of_keys, data_hash)
     result = Array.new
     values_to_add = Array.new
-    list1.each do |n|
-        if hash1[n].nil? == false
+    list_of_keys.each do |n|
+        if data_hash[n].nil? == false
             values_to_add = valueGetter(n)
             values_to_add.each do |m|
                 result.push(m)
@@ -254,11 +222,11 @@ def get(list1, hash1)
     return result
 end
 
-def gets(list1, hash1)
+def gets(list_of_keys, data_hash)
     result = Array.new
     values_to_add = Array.new
-    list1.each do |n|
-        if hash1[n].nil? == false
+    list_of_keys.each do |n|
+        if data_hash[n].nil? == false
             values_to_add = valueGetterCas(n)
             values_to_add.each do |m|
                 result.push(m)
@@ -270,17 +238,17 @@ def gets(list1, hash1)
     return result
 end
 
-def set(key, value, hash1)
-    hash1[key] = value
+def set(key, value, data_hash)
+    data_hash[key] = value
     result = Array.new
     result.push("STORED\r")
     return result
 end
 
-def add(key, value, hash1)
+def add(key, value, data_hash)
     result = Array.new
-    if (hash1[key].nil? == true)
-        hash1[key] = value
+    if (data_hash[key].nil? == true)
+        data_hash[key] = value
         result.push("STORED\r")
     else
         result.push("That key is already stored\r")
@@ -288,10 +256,10 @@ def add(key, value, hash1)
     return result
 end
 
-def replace(key, value, hash1)
+def replace(key, value, data_hash)
     result = Array.new
-    if (hash1[key].nil? == false)
-        hash1[key] = value
+    if (data_hash[key].nil? == false)
+        data_hash[key] = value
         result.push("STORED\r")
     else
         result.push("The key does not exist\r")
@@ -299,32 +267,32 @@ def replace(key, value, hash1)
     return result
 end
 
-def append(oldkey, newvalue, hash1)
+def append(oldkey, newvalue, data_hash)
     result = Array.new
-    hash1.each do |key,value|
+    data_hash.each do |key,value|
         if (key == oldkey)
-            hash1[key].value = value.value + newvalue.value
+            data_hash[key].value = value.value + newvalue.value
             result.push("STORED\r")
         end
     end
     return result
 end
 
-def prependd(oldkey, newvalue, hash1)
+def prependd(oldkey, newvalue, data_hash)
     result = Array.new
-    hash1.each do |key,value|
+    data_hash.each do |key,value|
         if (key == oldkey)
-            hash1[key] = key + oldkey
+            data_hash[key] = key + oldkey
             result.push("STORED\r")
         end
     end
     return result
 end
 
-def cas(key, value, hash1)
+def cas(key, value, data_hash)
     result = Array.new
-    if (hash1[key].nil? == false)
-        hash1[key] = value
+    if (data_hash[key].nil? == false)
+        data_hash[key] = value
         result.push("STORED\r")
     else
         result.push("The key does not exist\r")
