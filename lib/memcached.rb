@@ -57,6 +57,10 @@ class StoredKey
         @flag = flag
     end
 
+    def length=(length)
+        @length = length
+    end
+
     def value=(value)
         @value = value
     end
@@ -71,6 +75,44 @@ class StoredKey
 
 end
 
+class String
+    def integer? 
+      [                          # In descending order of likeliness:
+        /^[-+]?[1-9]([0-9]*)?$/, # decimal
+        /^0[0-7]+$/,             # octal
+        /^0x[0-9A-Fa-f]+$/,      # hexadecimal
+        /^0b[01]+$/              # binary
+      ].each do |match_pattern|
+        return true if self =~ match_pattern
+      end
+      return false
+    end
+end
+
+
+def correct_length(value, supposed_length)
+    if value.length == supposed_length.to_i
+        return true
+    end
+    return false
+end
+
+def is_data_valid(client_command)
+    if (client_command[1].is_number?)
+        if (client_command[2].is_number?)
+            if (client_command[3].is_number?)
+                return true
+            end
+        end
+    end
+    return false
+end
+
+class Object
+    def is_number?
+      to_f.to_s == to_s || to_i.to_s == to_s
+    end
+end
 
 def isExpired(key)
     current_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
@@ -84,7 +126,7 @@ end
 def valueGetter(key)
     result = Array.new
     if (isExpired(key) == false)
-        result.push("VALUE " + key + " " + HASH_DATA[key].flag + " " + HASH_DATA[key].length + "\r")
+        result.push("VALUE " + key + " " + HASH_DATA[key].flag.to_s + " " + HASH_DATA[key].length.to_s + "\r")
         result.push(HASH_DATA[key].value + "\r")
     else
         result.push("Could not find a value for key '#{key}'\r")
@@ -103,9 +145,18 @@ def valueGetterCas(key)
     return result
 end
 
+def error_message_length()
+    return ("Error, incorrect length for value\r")
+end
+
 def error_message_command(command_string)
     return ("Error, wrong number of arguments for the '#{command_string}' command\r")
 end
+
+def error_message_data()
+    return ("Error, flags, expiry time and byte length must be numbers\r")
+end
+
 
 def handle_command(client_command, data_hash)
     command = client_command[0]
@@ -134,8 +185,14 @@ def handle_command(client_command, data_hash)
                 end
             end
         elsif command == "set"
-            if arguments.length != 5
+            if (is_data_valid(arguments) == false)
+                log_message.push(error_message_data)
+                return log_message
+            elsif arguments.length != 5
                 log_message.push(error_message_command("set"))
+                return log_message
+            elsif (correct_length(arguments[4], arguments[3]) == false)
+                log_message.push(error_message_length())
                 return log_message
             else
                 values_to_add = (set(arguments[0], StoredKey.new(arguments[1],arguments[2], arguments[3], arguments[4]), data_hash))
@@ -144,51 +201,81 @@ def handle_command(client_command, data_hash)
                 end
             end
         elsif command == "add"
-            if arguments.length != 5
-                log_message.push(error_message_command("add"))
+            if (is_data_valid(arguments) == false)
+                log_message.push(error_message_data)
+                return log_message
+            elsif arguments.length != 5
+                log_message.push(error_message_command("set"))
+                return log_message
+            elsif (correct_length(arguments[4], arguments[3]) == false)
+                log_message.push(error_message_length())
                 return log_message
             else
-                values_to_add = (add(arguments[0], StoredKey.new(arguments[1],arguments[2], arguments[3], arguments[4]), data_hash)) 
+                values_to_add = (add(arguments[0], arguments[4], arguments[1], arguments[2], arguments[3], data_hash)) 
                 values_to_add.each do |n|
                     log_message.push(n)
                 end
             end
         elsif command == "replace"
-            if arguments.length != 5
-                log_message.push(error_message_command("replace"))
+            if (is_data_valid(arguments) == false)
+                log_message.push(error_message_data)
+                return log_message
+            elsif arguments.length != 5
+                log_message.push(error_message_command("set"))
+                return log_message
+            elsif (correct_length(arguments[4], arguments[3]) == false)
+                log_message.push(error_message_length())
                 return log_message
             else
-                values_to_add = (replace(arguments[0], StoredKey.new(arguments[1],arguments[2], arguments[3], arguments[4]), data_hash))
+                values_to_add = (replace(arguments[0], arguments[4], arguments[1], arguments[2], arguments[3], data_hash))
                 values_to_add.each do |n|
                     log_message.push(n)
                 end
             end
         elsif command == "append"
-            if arguments.length != 5
-                log_message.push(error_message_command("append"))
+            if (is_data_valid(arguments) == false)
+                log_message.push(error_message_data)
+                return log_message
+            elsif arguments.length != 5
+                log_message.push(error_message_command("set"))
+                return log_message
+            elsif (correct_length(arguments[4], arguments[3]) == false)
+                log_message.push(error_message_length())
                 return log_message
             else
-                values_to_add = (append(arguments[0], StoredKey.new(arguments[1],arguments[2], arguments[3], arguments[4]), data_hash))
+                values_to_add = (append(arguments[0], arguments[4], arguments[1], arguments[2], arguments[3], data_hash))
                 values_to_add.each do |n|
                     log_message.push(n)
                 end
             end
         elsif command == "prepend"
-            if arguments.length != 5
-                log_message.push(error_message_command("prepend"))
+            if (is_data_valid(arguments) == false)
+                log_message.push(error_message_data)
+                return log_message
+            elsif arguments.length != 5
+                log_message.push(error_message_command("set"))
+                return log_message
+            elsif (correct_length(arguments[4], arguments[3]) == false)
+                log_message.push(error_message_length())
                 return log_message
             else
-                values_to_add = (prependd(arguments[0], StoredKey.new(arguments[1],arguments[2], arguments[3], arguments[4]), data_hash))
+                values_to_add = (prependd(arguments[0], arguments[4], arguments[1], arguments[2], arguments[3], data_hash))
                 values_to_add.each do |n|
                     log_message.push(n)
                 end
             end
         elsif command == "cas"
-            if arguments.length != 5
-                log_message.push(error_message_command("cas"))
+            if (is_data_valid(arguments) == false)
+                log_message.push(error_message_data)
+                return log_message
+            elsif arguments.length != 5
+                log_message.push(error_message_command("set"))
+                return log_message
+            elsif (correct_length(arguments[4], arguments[3]) == false)
+                log_message.push(error_message_length())
                 return log_message
             else
-                values_to_add = (cas(arguments[0], StoredKey.new(arguments[1],arguments[2], arguments[3], arguments[4]), data_hash))
+                values_to_add = (cas(arguments[0], arguments[4], data_hash))
                 values_to_add.each do |n|
                     log_message.push(n)
                 end
@@ -245,10 +332,14 @@ def set(key, value, data_hash)
     return result
 end
 
-def add(key, value, data_hash)
+def add(key, value, newflag, newexpiry, newlength, data_hash)
     result = Array.new
     if (data_hash[key].nil? == true)
         data_hash[key] = value
+        data_hash[key].flag = newflag
+        data_hash[key].length = data_hash[key].length.to_i + newlength.to_i
+        data_hash[key].expiry = newexpiry
+        data_hash[key].updateCreationTime
         result.push("STORED\r")
     else
         result.push("That key is already stored\r")
@@ -256,10 +347,14 @@ def add(key, value, data_hash)
     return result
 end
 
-def replace(key, value, data_hash)
+def replace(key, value, newflag, newexpiry, newlength, data_hash)
     result = Array.new
     if (data_hash[key].nil? == false)
-        data_hash[key] = value
+        data_hash[key].value = value
+        data_hash[key].flag = newflag
+        data_hash[key].length = newlength.to_i
+        data_hash[key].expiry = newexpiry
+        data_hash[key].updateCreationTime
         result.push("STORED\r")
     else
         result.push("The key does not exist\r")
@@ -267,22 +362,30 @@ def replace(key, value, data_hash)
     return result
 end
 
-def append(oldkey, newvalue, data_hash)
+def append(oldkey, newvalue, newflag, newexpiry, newlength, data_hash)
     result = Array.new
     data_hash.each do |key,value|
         if (key == oldkey)
-            data_hash[key].value = value.value + newvalue.value
+            data_hash[key].value = value.value + newvalue
+            data_hash[key].flag = newflag
+            data_hash[key].length = data_hash[key].length.to_i + newlength.to_i
+            data_hash[key].expiry = newexpiry
+            data_hash[key].updateCreationTime
             result.push("STORED\r")
         end
     end
     return result
 end
 
-def prependd(oldkey, newvalue, data_hash)
+def prependd(oldkey, newvalue, newflag, newexpiry, newlength, data_hash)
     result = Array.new
     data_hash.each do |key,value|
         if (key == oldkey)
-            data_hash[key] = key + oldkey
+            data_hash[key].value = newvalue + value.value
+            data_hash[key].flag = newflag
+            data_hash[key].length = data_hash[key].length.to_i + newlength.to_i
+            data_hash[key].expiry = newexpiry
+            data_hash[key].updateCreationTime
             result.push("STORED\r")
         end
     end
