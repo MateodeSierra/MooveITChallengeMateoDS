@@ -40,8 +40,8 @@ loop do
                 lock.synchronize do
                     result = handle_command(command_parts, HASH_DATA)
                     if (result == true)
-                        client.puts("Connection is closing in 5 seconds\r")
-                        sleep(5)
+                        client.puts("Connection closed\r")
+                        sleep(1)
                         client.close
                         do_break = true
                         break
