@@ -268,14 +268,14 @@ def handle_command(client_command, data_hash)
             if (is_data_valid(arguments) == false)
                 log_message.push(error_message_data)
                 return log_message
-            elsif arguments.length != 5
+            elsif arguments.length != 6
                 log_message.push(error_message_command("set"))
                 return log_message
-            elsif (correct_length(arguments[4], arguments[3]) == false)
+            elsif (correct_length(arguments[5], arguments[3]) == false)
                 log_message.push(error_message_length())
                 return log_message
             else
-                values_to_add = (cas(arguments[0], arguments[4], data_hash))
+                values_to_add = (cas(arguments[0], arguments[5], arguments[4], data_hash))
                 values_to_add.each do |n|
                     log_message.push(n)
                 end
@@ -392,13 +392,17 @@ def prependd(oldkey, newvalue, newflag, newexpiry, newlength, data_hash)
     return result
 end
 
-def cas(key, value, data_hash)
+def cas(key, value, cas, data_hash)
     result = Array.new
     if (data_hash[key].nil? == false)
-        data_hash[key] = value
-        result.push("STORED\r")
+        if (data_hash[key].cas_number == cas.to_i)
+            data_hash[key].value = value
+            result.push("STORED\r")
+        else
+            result.push("EXISTS\r")
+        end
     else
-        result.push("The key does not exist\r")
+        result.push("NOT_FOUND\r")
     end
     return result
 end
