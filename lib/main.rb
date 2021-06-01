@@ -40,7 +40,7 @@ loop do
                 lock.synchronize do
                     result = handle_command(command_parts, HASH_DATA)
                     if (result == true)
-                        client.puts("Connection closed\r")
+                        client.print("Connection closed\r\n")
                         sleep(1)
                         client.close
                         do_break = true
@@ -48,7 +48,7 @@ loop do
                     else
                         if (result.nil? == false)
                             result.each do |n|
-                            client.puts(n)
+                            client.print(n)
                             end
                         end
                     end
