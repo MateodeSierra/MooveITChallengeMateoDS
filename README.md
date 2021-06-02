@@ -79,6 +79,12 @@ To get a local copy up and running follow these simple example steps. (Guide mad
 
 6. Wait for the instalation to finish, after this, to test if telnet is correctly installed, go into cmd and type telnet. You can press help to see all available commands.
 
+7. To open a client via Telnet, go into cmd and type "telnet localhost" followed by a space and the port number displayed on the server window.
+
+8. If you reach this window, the clinet is running and you are connected to the server. You can start entering commands.
+
+   ![Client connected!](https://i.imgur.com/QoZkzi6.png)
+
 
 
 1. Download Visual Code or any other ruby capable source code editor  [VisualCode](https://code.visualstudio.com/)
