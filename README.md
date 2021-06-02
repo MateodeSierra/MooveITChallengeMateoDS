@@ -1,5 +1,5 @@
 
-[![LinkedIn][linkedin-shield]][linkedin-url]
+[![LinkedIn][linkedin-shield]][https://www.linkedin.com/in/mateo-de-sierra-41a15b168/]
 
 
 
