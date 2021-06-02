@@ -47,7 +47,7 @@ This project was made by Mateo de Sierra, as part of the employee selection prog
 <!-- GETTING STARTED -->
 ## Getting Started
 
-To get a local copy up and running follow these simple example steps. (Guide made for Windows10)
+To get a local copy up and running follow these simple steps. (Guide made for Windows10)
 
 
 ### Server and Client Installation
@@ -62,7 +62,7 @@ To get a local copy up and running follow these simple example steps. (Guide mad
    ![Server running!](https://i.imgur.com/qSOW8B8.png)
 4. To open a client, first you need to turn on telnet on your PC. To acomplish this, right click the Start button and select "Programs and Features", then click "Turn Windows features on or off" from the left hand menu.
 
-5. The following windows appears, scroll down and select Telnet Client, then press OK
+5. The following window appears, scroll down and select Telnet Client, then press OK
 
    ![Telnet Selected](https://kencenerelli.files.wordpress.com/2017/07/telnet03_thumb.png?w=415&h=368)
 
