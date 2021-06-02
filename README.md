@@ -63,15 +63,13 @@ To get a local copy up and running follow these simple example steps.
 
 ### Installation
 
-1. Get a free API Key at [https://example.com](https://example.com)
+1. Download Visual Code or any other ruby capable source code editor  [VisualCode](https://code.visualstudio.com/)
 2. Clone the repo
    ```sh
-   git clone https://github.com/your_username_/Project-Name.git
+   git clone https://github.com/MateodeSierra/MooveITChallengeMateoDS
    ```
-3. Install NPM packages
-   ```sh
-   npm install
-   ```
+3. Install the Ruby extension on Visual Code
+   ![extension image](https://i.imgur.com/YQ70jGK.png)
 4. Enter your API in `config.js`
    ```JS
    const API_KEY = 'ENTER YOUR API';
