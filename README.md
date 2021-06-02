@@ -109,7 +109,28 @@ To get a local copy up and running follow these simple example steps. (Guide mad
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+Memcached is a free & open-source, high-performance, distributed memory object caching system, generic in nature, but intended for use in speeding up dynamic web applications by alleviating database load.
+
+This memcached implementation has the following working commands followed by the required arguments:
+
+get:  (get (key))  **Multiple keys supported, enter them separated by a whitespace
+* get retreives one or more keys from the server, returns the flag value, expiry time and value
+gets: (gets (key))  **Multiple keys supported, enter them separated by a whitespace
+* gets retreives one or more keys from the server, returns the flag value, expiry time, unique cas number and value
+set: (set (key) (flag) (expire timy in seconds) (length of value in bytes)) Another line will appear, where the value needs to be entered. This value needs to be of the same length as the one entered by arguments.
+* set stores data on the server
+add: (add (key) (flag) (expire timy in seconds) (length of value in bytes)) Another line will appear, where the value needs to be entered. This value needs to be of the same length as the one entered by arguments.
+* add stores data on the server, but only if the key isnt already stored.
+replace: (replace (key) (flag) (expire timy in seconds) (length of value in bytes)) Another line will appear, where the value needs to be entered. This value needs to be of the same length as the one entered by arguments.
+* replace stores data on the server, but only if the key already exists
+append: (append (key) (flag) (expire timy in seconds) (length of value in bytes)) Another line will appear, where the value needs to be entered. This value needs to be of the same length as the one entered by arguments.
+* append adds the entered value to the end of the existing value of the desired key
+prepend: (prepend (key) (flag) (expire timy in seconds) (length of value in bytes)) Another line will appear, where the value needs to be entered. This value needs to be of the same length as the one entered by arguments.
+* prepend adds the entered value before the existing value of the desired key
+cas: (set (key) (flag) (expire timy in seconds) (length of value in bytes) (unique cas identifier)) Another line will appear, where the value needs to be entered. This value needs to be of the same length as the one entered by arguments.
+* cas replaces the value of the desired key, but only if the unique cas identifier hasnt changed since the last time the client asked for it.
+
+
 
 _For more examples, please refer to the [Documentation](https://example.com)_
 
