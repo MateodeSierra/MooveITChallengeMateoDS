@@ -1,8 +1,4 @@
 
-[![LinkedIn][linkedin-shield]][https://www.linkedin.com/in/mateo-de-sierra-41a15b168/]
-
-
-
 <br />
 <p align="center">
   <h3 align="center">READ-ME MooveIT Challenge</h3>
@@ -145,7 +141,7 @@ _For more examples, please refer to the [Documentation](https://github.com/memca
 <!-- CONTACT -->
 ## Contact
 
-Mateo de Sierra - themateods@gmail.com
+Mateo de Sierra - themateods@gmail.com - [LinkedIN](https://www.linkedin.com/in/mateo-de-sierra-41a15b168/)
 
 Project Link: [https://github.com/MateodeSierra/MooveITChallengeMateoDS](https://github.com/MateodeSierra/MooveITChallengeMateoDS)
 
