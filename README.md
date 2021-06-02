@@ -79,7 +79,7 @@ To get a local copy up and running follow these simple steps. (Guide made for Wi
 
 6. Wait for the instalation to finish, after this, to test if telnet is correctly installed, go into cmd and type telnet. You can press help to see all available commands.
 
-7. To open a client via Telnet, go into cmd and type "telnet localhost" followed by a space and the port number displayed on the server window.
+7. To open a client via Telnet, go into a new cmd and type "telnet localhost" followed by a space and the port number displayed on the server window.
 
 8. If you reach this window, the client is running and you are connected to the server. You can start entering commands.
 
