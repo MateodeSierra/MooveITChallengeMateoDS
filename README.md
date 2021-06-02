@@ -27,9 +27,6 @@
     </li>
     <li>
       <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#installation">Installation</a></li>
-      </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
     <li><a href="#contact">Contact</a></li>
@@ -81,19 +78,24 @@ To get a local copy up and running follow these simple example steps. (Guide mad
 
    ![Client connected!](https://i.imgur.com/QoZkzi6.png)
 
+9. To close the client, just press the red cross on the top right corner.
+
 ### Test environment Installation
 
 1. Download Visual Code or any other ruby capable source code editor  [VisualCode](https://code.visualstudio.com/)
 
 2. Open Visual Code and install the Ruby extension
+
    ![Extension image](https://i.imgur.com/YQ70jGK.png)
 
 3. Go into cmd and type "gem install rspec", this gem is used for testing the code
 
 4. Once Rspec is intalled, go back into Visual Code and open your project folder, then right click the "memcached_spec.rb" file, and select "Open in Integrated Terminal".
+
    ![Open Terminal](https://i.imgur.com/52OM44p.png)
 
 5. The opened terminal should look like this:
+
    ![Terminal](https://i.imgur.com/dE8AuTH.png)
 
 6. To run the tests type "rspec ..\spec\memcached_spec.rb" into the terminal then press ENTER. If all tests run correctly all dots should be green and no error message should pop up. To check how tests work, double click the "memcached_spec.rb" file on your workspace folder.
