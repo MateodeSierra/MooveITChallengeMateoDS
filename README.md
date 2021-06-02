@@ -58,17 +58,23 @@ This project was made by Mateo de Sierra, as part of the employee selection prog
 <!-- GETTING STARTED -->
 ## Getting Started
 
-To get a local copy up and running follow these simple example steps.
+To get a local copy up and running follow these simple example steps. (Guide made for Windows10)
 
 
 ### Installation
 
-1. Download Visual Code or any other ruby capable source code editor  [VisualCode](https://code.visualstudio.com/)
-2. Clone the repo
+1. Clone the repo
 
    https://github.com/MateodeSierra/MooveITChallengeMateoDS)
+
+2. Go into the repo folder, into the lib folder, and double click the "main.rb" file
+3. If you reach this state the server is already running on the port displayed on screen
+   ![Server running!](https://i.imgur.com/qSOW8B8.png)
+
+1. Download Visual Code or any other ruby capable source code editor  [VisualCode](https://code.visualstudio.com/)
+
 3. Install the Ruby extension on Visual Code
-   ![extension image](https://i.imgur.com/YQ70jGK.png)
+   ![Extension image](https://i.imgur.com/YQ70jGK.png)
 4. Enter your API in `config.js`
    ```JS
    const API_KEY = 'ENTER YOUR API';
