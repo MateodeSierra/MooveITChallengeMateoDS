@@ -49,6 +49,17 @@ This project was made by Mateo de Sierra, as part of the employee selection prog
 
 To get a local copy up and running follow these simple steps. (Guide made for Windows10)
 
+### Ruby Instalation
+
+1. Download the ruby installer for windows from this page:
+
+   [Ruby](https://www.ruby-lang.org/)
+
+2. Select the stable version (marked with an arrow on the versions page), and proceed with the instalation process
+
+3. To check if ruby is correctly installed, go into a cmd and type "ruby -v", if ruby answers, it is correctly installed as seen next
+
+   ![Ruby installed](https://i.imgur.com/sQmJasR.png)
 
 ### Server and Client Installation
 
