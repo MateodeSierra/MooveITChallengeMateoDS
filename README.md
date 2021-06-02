@@ -38,7 +38,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-This project was made by Mateo de Sierra, as part of the employee selection program for MooveIT.
+This project was made by Mateo de Sierra, as part of the employee selection program for MooveIT. For this challenge a ruby implementation of Memcached was needed to be programmed. Memcached is an in-memory key-value store for small chunks of arbitrary data (strings, objects) from results of database calls, API calls, or page rendering.
 
 ### Built With
 
