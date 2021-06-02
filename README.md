@@ -65,9 +65,7 @@ To get a local copy up and running follow these simple example steps.
 
 1. Download Visual Code or any other ruby capable source code editor  [VisualCode](https://code.visualstudio.com/)
 2. Clone the repo
-   ```sh
-   (https://github.com/MateodeSierra/MooveITChallengeMateoDS)
-   ```
+    (https://github.com/MateodeSierra/MooveITChallengeMateoDS)
 3. Install the Ruby extension on Visual Code
    ![extension image](https://i.imgur.com/YQ70jGK.png)
 4. Enter your API in `config.js`
