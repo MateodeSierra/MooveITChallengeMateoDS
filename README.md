@@ -69,7 +69,17 @@ To get a local copy up and running follow these simple example steps. (Guide mad
 
 2. Go into the repo folder, into the lib folder, and double click the "main.rb" file
 3. If you reach this state the server is already running on the port displayed on screen
+
    ![Server running!](https://i.imgur.com/qSOW8B8.png)
+4. To open a client, first you need to turn on telnet on your PC. To acomplish this, right click the Start button and select "Programs and Features", then click "Turn Windows features on or off" from the left hand menu.
+
+5. The following windows appears, scroll down and select Telnet Client, then press OK
+
+   ![Telnet Selected](https://kencenerelli.files.wordpress.com/2017/07/telnet03_thumb.png?w=415&h=368)
+
+6. Wait for the instalation to finish, after this, to test if telnet is correctly installed, go into cmd and type telnet. You can press help to see all available commands.
+
+
 
 1. Download Visual Code or any other ruby capable source code editor  [VisualCode](https://code.visualstudio.com/)
 
