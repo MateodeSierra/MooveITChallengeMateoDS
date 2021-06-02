@@ -61,9 +61,9 @@ This project was made by Mateo de Sierra, as part of the employee selection prog
 To get a local copy up and running follow these simple example steps. (Guide made for Windows10)
 
 
-### Installation
+### Server and Client Installation
 
-1. Clone the repo
+1. Download the repo and unzip
 
    https://github.com/MateodeSierra/MooveITChallengeMateoDS)
 
@@ -81,20 +81,28 @@ To get a local copy up and running follow these simple example steps. (Guide mad
 
 7. To open a client via Telnet, go into cmd and type "telnet localhost" followed by a space and the port number displayed on the server window.
 
-8. If you reach this window, the clinet is running and you are connected to the server. You can start entering commands.
+8. If you reach this window, the client is running and you are connected to the server. You can start entering commands.
 
    ![Client connected!](https://i.imgur.com/QoZkzi6.png)
 
-
+### Test environment Installation
 
 1. Download Visual Code or any other ruby capable source code editor  [VisualCode](https://code.visualstudio.com/)
 
-3. Install the Ruby extension on Visual Code
+2. Open Visual Code and install the Ruby extension
    ![Extension image](https://i.imgur.com/YQ70jGK.png)
-4. Enter your API in `config.js`
-   ```JS
-   const API_KEY = 'ENTER YOUR API';
-   ```
+
+3. Go into cmd and type "gem install rspec", this gem is used for testing the code
+
+4. Once Rspec is intalled, go back into Visual Code and open your project folder, then right click the "memcached_spec.rb" file, and select "Open in Integrated Terminal".
+   ![Open Terminal](https://i.imgur.com/52OM44p.png)
+
+5. The opened terminal should look like this:
+   ![Terminal](https://i.imgur.com/dE8AuTH.png)
+
+6. To run the tests type "rspec ..\spec\memcached_spec.rb" into the terminal then press ENTER. If all tests run correctly all dots should be green and no error message should pop up. To check how tests work, double click the "memcached_spec.rb" file on your workspace folder.
+
+
 
 
 
