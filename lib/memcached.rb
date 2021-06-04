@@ -211,61 +211,26 @@ end
 def handle_command(client_command, data_hash)
     command = client_command[0]
     arguments = client_command[1..-1]
-    log_message = Array.new
-    values_to_add = Array.new
     if COMMANDS.include?(command)
         if command == "get"
-            values_to_add = (get(arguments, data_hash))
-            values_to_add.each do |n|
-                log_message.push(n)
-            end
-            return log_message
+            return get(arguments, data_hash)
         elsif command == "gets"
-            values_to_add = (gets(arguments, data_hash))
-            values_to_add.each do |n|
-                log_message.push(n)
-            end
-            return log_message
+            return gets(arguments, data_hash)
         elsif command == "set"
-            values_to_add = (set(arguments, data_hash))
-            values_to_add.each do |n|
-                log_message.push(n)
-            end
-            return log_message
+            return set(arguments, data_hash)
         elsif command == "add"
-            values_to_add = (add(arguments, data_hash)) 
-            values_to_add.each do |n|
-                log_message.push(n)
-            end
-            return log_message
+            return add(arguments, data_hash)
         elsif command == "replace"
-            values_to_add = (replace(arguments, data_hash))
-            values_to_add.each do |n|
-                log_message.push(n)
-            end
-            return log_message
+            return replace(arguments, data_hash)
         elsif command == "append"
-            values_to_add = (append(arguments, data_hash))
-            values_to_add.each do |n|
-                log_message.push(n)
-            end
-            return log_message
+            return append(arguments, data_hash)
         elsif command == "prepend"
-            values_to_add = (prependd(arguments, data_hash))
-            values_to_add.each do |n|
-                log_message.push(n)
-            end
-            return log_message
+            return prependd(arguments, data_hash)
         elsif command == "cas"
-            values_to_add = (cas(arguments, data_hash))
-            values_to_add.each do |n|
-                log_message.push(n)
-            end
-            return log_message
+            return cas(arguments, data_hash)
         elsif command == "exit"
             if arguments.length != 0
-                log_message.push(error_message_error())
-                return log_message
+                return error_message_error())
             else
                 return true
             end
