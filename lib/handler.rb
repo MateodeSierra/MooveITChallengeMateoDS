@@ -1,4 +1,6 @@
-require_relative 'stored_key.rb'
+require_relative 'stored_key'
+require_relative 'validation'
+require_relative 'message_codes'
 require 'socket'
 require 'time'
 
@@ -16,39 +18,6 @@ COMMANDS = [
 ]
 
 HASH_DATA = {}
-
-def correct_length(value, supposed_length)
-    if value.length == supposed_length.to_i
-        return true
-    end
-    return false
-end
-
-def is_data_numbers(client_command)
-    if (client_command[1].is_number?)
-        if (client_command[2].is_number?)
-            if (client_command[3].is_number?)
-                return true
-            end
-        end
-    end
-    return false
-end
-
-class Object
-    def is_number?
-      to_f.to_s == to_s || to_i.to_s == to_s
-    end
-end
-
-def is_expired(key)
-    current_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
-    if ((HASH_DATA[key].creation_time.to_i + HASH_DATA[key].expiry.to_i) >= current_time)
-        return false
-    end
-    HASH_DATA.delete(key)
-    return true
-end
 
 def value_getter(key)
     result = Array.new
@@ -68,145 +37,6 @@ def value_getter_cas(key)
     return result
 end
 
-def message_stored()
-    return ("STORED\r\n")
-end
-
-def message_end()
-    return ("END\r\n")
-end
-
-def error_message_exists()
-    return ("EXISTS\r\n")
-end
-
-def error_message_not_found()
-    return ("NOT_FOUND\r\n")
-end
-
-def error_message_length()
-    return ("VALUE_LENGTH\r\n")
-end
-
-def error_message_command()
-    return ("ARGUMENTS\r\n")
-end
-
-def error_message_data()
-    return ("TYPE\r\n")
-end
-
-def error_message_error()
-    return ("ERROR\r\n")
-end
-
-def is_get_valid(arguments)
-    log_message = Array.new
-    if arguments.length < 1
-        log_message.push(error_message_error())
-        return log_message
-    end
-    return true
-end
-
-def is_gets_valid(arguments)
-    log_message = Array.new
-    if arguments.length < 1
-        log_message.push(error_message_error())
-        return log_message
-    end
-    return true
-end
-
-def is_set_valid(arguments)
-    log_message = Array.new
-    if (is_data_numbers(arguments) == false)
-        log_message.push(error_message_error())
-        return log_message
-    elsif arguments.length != 5
-        log_message.push(error_message_error())
-        return log_message
-    elsif (correct_length(arguments[4], arguments[3]) == false)
-        log_message.push(error_message_error())
-        return log_message
-    end
-    return true
-end
-
-def is_add_valid(arguments)
-    log_message = Array.new
-    if (is_data_numbers(arguments) == false)
-        log_message.push(error_message_error())
-        return log_message
-    elsif arguments.length != 5
-        log_message.push(error_message_error())
-        return log_message
-    elsif (correct_length(arguments[4], arguments[3]) == false)
-        log_message.push(error_message_error())
-        return log_message
-    end
-    return true
-end
-
-def is_replace_valid(arguments)
-    log_message = Array.new
-    if (is_data_numbers(arguments) == false)
-        log_message.push(error_message_error())
-        return log_message
-    elsif arguments.length != 5
-        log_message.push(error_message_error())
-        return log_message
-    elsif (correct_length(arguments[4], arguments[3]) == false)
-        log_message.push(error_message_error())
-        return log_message
-    end
-    return true
-end
-
-def is_append_valid(arguments)
-    log_message = Array.new
-    if (is_data_numbers(arguments) == false)
-        log_message.push(error_message_error())
-        return log_message
-    elsif arguments.length != 5
-        log_message.push(error_message_error())
-        return log_message
-    elsif (correct_length(arguments[4], arguments[3]) == false)
-        log_message.push(error_message_error())
-        return log_message
-    end
-    return true
-end
-
-def is_prepend_valid(arguments)
-    log_message = Array.new
-    if (is_data_numbers(arguments) == false)
-        log_message.push(error_message_error())
-        return log_message
-    elsif arguments.length != 5
-        log_message.push(error_message_error())
-        return log_message
-    elsif (correct_length(arguments[4], arguments[3]) == false)
-        log_message.push(error_message_error())
-        return log_message
-    end
-    return true
-end
-
-def is_cas_valid(arguments)
-    log_message = Array.new
-    if (is_data_numbers(arguments) == false)
-        log_message.push(error_message_error())
-        return log_message
-    elsif arguments.length != 6
-        log_message.push(error_message_error())
-        return log_message
-    elsif (correct_length(arguments[5], arguments[3]) == false)
-        log_message.push(error_message_error())
-        return log_message
-    end
-    return true
-end
 
 def handle_command(client_command, data_hash)
     command = client_command[0]
@@ -230,7 +60,7 @@ def handle_command(client_command, data_hash)
             return cas(arguments, data_hash)
         elsif command == "exit"
             if arguments.length != 0
-                return error_message_error())
+                return error_message_error()
             else
                 return true
             end
@@ -389,6 +219,3 @@ def cas(arguments, data_hash)
     end
     return its_valid
 end
-
-
-

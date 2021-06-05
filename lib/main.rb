@@ -1,4 +1,4 @@
-require_relative 'memcached'
+require_relative 'handler'
 require 'socket'
 require 'time'
 require 'Monitor'

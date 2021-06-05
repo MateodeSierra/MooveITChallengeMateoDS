@@ -1,4 +1,5 @@
-require_relative '..\lib\memcached'
+require_relative '..\lib\stored_key'
+require_relative '..\lib\handler'
 require_relative '..\lib\stored_key'
 
 key = ""
