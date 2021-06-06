@@ -42,11 +42,17 @@ describe get(arguments, HASH_DATA) do
    end
 
    #get with invalid keys
-   it 'tries to get back the value of un unexistant key' do
+   it 'tries to get back the value of an unexistant key' do
       expect(get(Array["fob"],HASH_DATA)).to eq(["NOT_FOUND\r\n", "END\r\n"])
    end
 
-   #get with one key that exists and one that doenst
+   #get with a key that doenst expire
+   it 'tries to get back the value of a key that doesnt expire' do
+      HASH_DATA["foo"].expiry = 0
+      expect(get(Array["foo"],HASH_DATA)).to eq(["VALUE foo 0 3\r\n", "bar\r\n", "END\r\n"])
+   end
+
+   #get with one key that exists and one that doesnt
    it 'tries to get back the value of 2 keys, one which exists and the other that doesnt' do
       set(Array["mat", "0", "3600","2", "eo"],HASH_DATA)
       expect(get(Array["foo", "mate"],HASH_DATA)).to eq(["VALUE foo 0 3\r\n", "bar\r\n","NOT_FOUND\r\n", "END\r\n"])
@@ -64,6 +70,12 @@ describe gets(arguments, HASH_DATA) do
    #get with invalid keys
    it 'tries to get back the value of un unexistant key' do
       expect(gets(Array["fo3"],HASH_DATA)).to eq(["NOT_FOUND\r\n", "END\r\n"])
+   end
+
+   #gets with a key that doenst expire
+   it 'tries to get back the value of a key that doesnt expire' do
+      HASH_DATA["foo"].expiry = 0
+      expect(gets(Array["foo"],HASH_DATA)).to eq(["VALUE foo 0 3 1\r\n", "bar\r\n", "END\r\n"])
    end
 
    #get with one key that exists and one that doenst
@@ -89,7 +101,7 @@ describe add(arguments, HASH_DATA) do
    end
 
    #add already created key
-   it 'tries to add a new StoredKey with incorrect argument values' do
+   it 'tries to add a new StoredKey with a key that already exists' do
       arguments = Array["pet", "0", "3600","3", "tou"]
       expect(add(arguments, HASH_DATA)).to eq(["EXISTS\r\n"])
    end
@@ -118,7 +130,7 @@ describe replace(arguments, HASH_DATA) do
    end
 
    #replace a key that does not exist
-   it 'tries to replace a StoredKey with incorrect argument values' do
+   it 'tries to replace a StoredKey with a key that doesnt exist' do
       arguments = Array["ket", "0", "3600","3", "ooo"]
       expect(replace(arguments, HASH_DATA)).to eq(["NOT_FOUND\r\n"])
    end
