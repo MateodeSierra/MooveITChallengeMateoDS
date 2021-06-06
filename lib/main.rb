@@ -1,22 +1,14 @@
 require_relative 'handler'
+require_relative 'collector'
+require_relative 'constants'
 require 'socket'
 require 'time'
 require 'Monitor'
 
-
-COMMANDS_THAT_NEED_TWO = [
-    "set",
-    "add",
-    "replace",
-    "append",
-    "prepend",
-    "cas",
-]
-
-SERVER_PORT = 2452
-
 server = TCPServer.new('localhost', SERVER_PORT)
 lock = Monitor.new
+collector = Collector.new(COLLECTOR_INTERVAL,lock)
+collector.every_n_seconds()
 
 puts("MooveIT Challenge, by Mateo de Sierra")
 puts("Server is online, listening on port #{SERVER_PORT}")

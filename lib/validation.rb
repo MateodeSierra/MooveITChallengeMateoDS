@@ -25,7 +25,9 @@ end
 
 def is_expired(key)
     current_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
-    if ((HASH_DATA[key].creation_time.to_i + HASH_DATA[key].expiry.to_i) >= current_time)
+    if HASH_DATA[key].expiry.to_i == 0
+        return false
+    elsif ((HASH_DATA[key].creation_time.to_i + HASH_DATA[key].expiry.to_i) >= current_time)
         return false
     end
     HASH_DATA.delete(key)

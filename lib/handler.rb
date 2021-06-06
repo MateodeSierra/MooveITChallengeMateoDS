@@ -24,6 +24,8 @@ def value_getter(key)
     if (is_expired(key) == false)
         result.push("VALUE " + key + " " + HASH_DATA[key].flag.to_s + " " + HASH_DATA[key].length.to_s + "\r\n")
         result.push(HASH_DATA[key].value + "\r\n")
+    else
+        result.push(error_message_not_found)
     end
     return result
 end
@@ -33,6 +35,8 @@ def value_getter_cas(key)
     if (is_expired(key) == false)
         result.push("VALUE " + key + " " + HASH_DATA[key].flag.to_s + " " + HASH_DATA[key].length.to_s + " " + HASH_DATA[key].cas_number.to_s + "\r\n")
         result.push(HASH_DATA[key].value + "\r\n")
+    else
+        result.push(error_message_not_found)
     end
     return result
 end
