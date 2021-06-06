@@ -74,11 +74,11 @@ end
 
 def get(list_of_keys, data_hash)
     its_valid = is_get_valid(list_of_keys)
-    if its_valid == true
+    if (its_valid == true)
         result = Array.new
         values_to_add = Array.new
         list_of_keys.each do |n|
-            if data_hash[n].nil? == false
+            if (theres_something(n))
                 values_to_add = value_getter(n)
                 values_to_add.each do |m|
                     result.push(m)
@@ -95,11 +95,11 @@ end
 
 def gets(list_of_keys, data_hash)
     its_valid = is_gets_valid(list_of_keys)
-    if its_valid == true
+    if (its_valid == true)
         result = Array.new
         values_to_add = Array.new
         list_of_keys.each do |n|
-            if data_hash[n].nil? == false
+            if (theres_something(n))
                 values_to_add = value_getter_cas(n)
                 values_to_add.each do |m|
                     result.push(m)
@@ -129,7 +129,7 @@ def add(arguments, data_hash)
     its_valid = is_add_valid(arguments)
     if its_valid == true
         result = Array.new
-        if (data_hash[arguments[0]].nil? == true)
+        if (theres_something(arguments[0]) == false)
             data_hash[arguments[0]] = StoredKey.new(arguments[1], arguments[2], arguments[3], arguments[4])
             result.push(message_stored)
         else
@@ -144,7 +144,7 @@ def replace(arguments, data_hash)
     its_valid = is_replace_valid(arguments)
     if its_valid == true
         result = Array.new
-        if (data_hash[arguments[0]].nil? == false)
+        if (theres_something(arguments[0]) == true)
             data_hash[arguments[0]].value = arguments[4]
             data_hash[arguments[0]].flag = arguments[1]
             data_hash[arguments[0]].expiry = arguments[2]
@@ -165,15 +165,17 @@ def append(arguments, data_hash)
     if its_valid == true
         result = Array.new
         data_hash.each do |key,value|
-            if (key == arguments[0])
-                data_hash[arguments[0]].value = value.value + arguments[4]
-                data_hash[arguments[0]].flag = arguments[1]
-                data_hash[arguments[0]].expiry = arguments[2]
-                data_hash[arguments[0]].length = data_hash[arguments[0]].length.to_i + arguments[3].to_i
-                data_hash[arguments[0]].updateCreationTime
-                data_hash[arguments[0]].update_cas
-                result.push(message_stored)
-                return result
+            if (theres_something(key))
+                if (key == arguments[0])
+                    data_hash[arguments[0]].value = value.value + arguments[4]
+                    data_hash[arguments[0]].flag = arguments[1]
+                    data_hash[arguments[0]].expiry = arguments[2]
+                    data_hash[arguments[0]].length = data_hash[arguments[0]].length.to_i + arguments[3].to_i
+                    data_hash[arguments[0]].updateCreationTime
+                    data_hash[arguments[0]].update_cas
+                    result.push(message_stored)
+                    return result
+                end
             end
         end
         result.push(error_message_not_found)
@@ -187,15 +189,17 @@ def prependd(arguments, data_hash)
     if its_valid == true
         result = Array.new
         data_hash.each do |key,value|
-            if (key == arguments[0])
-                data_hash[arguments[0]].value = arguments[4] + value.value
-                data_hash[arguments[0]].flag = arguments[1]
-                data_hash[arguments[0]].length = data_hash[arguments[0]].length.to_i + arguments[3].to_i
-                data_hash[arguments[0]].expiry = arguments[2]
-                data_hash[arguments[0]].updateCreationTime
-                data_hash[arguments[0]].update_cas
-                result.push(message_stored)
-                return result
+            if (theres_something(key))
+                if (key == arguments[0])
+                    data_hash[arguments[0]].value = arguments[4] + value.value
+                    data_hash[arguments[0]].flag = arguments[1]
+                    data_hash[arguments[0]].length = data_hash[arguments[0]].length.to_i + arguments[3].to_i
+                    data_hash[arguments[0]].expiry = arguments[2]
+                    data_hash[arguments[0]].updateCreationTime
+                    data_hash[arguments[0]].update_cas
+                    result.push(message_stored)
+                    return result
+                end
             end
         end
         result.push(error_message_not_found)
@@ -208,7 +212,7 @@ def cas(arguments, data_hash)
     its_valid = is_cas_valid(arguments)
     if its_valid == true
         result = Array.new
-        if (data_hash[arguments[0]].nil? == false)
+        if (theres_something(arguments[0]))
             if (data_hash[arguments[0]].cas_number == arguments[4].to_i)
                 data_hash[arguments[0]].value = arguments[5]
                 data_hash[arguments[0]].update_cas
