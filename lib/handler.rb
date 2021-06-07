@@ -1,5 +1,9 @@
-require_relative 'stored_key'
+require_relative 'collector'
+require_relative 'constants'
+require_relative 'server'
+require_relative 'storage'
 require_relative 'validation'
+require_relative 'stored_key'
 require_relative 'message_codes'
 require 'socket'
 require 'time'
@@ -18,32 +22,6 @@ COMMANDS = [
 ]
 
 HASH_DATA = {}
-
-
-##########################################
-def value_getter(key)
-    result = Array.new
-    if (is_expired(key) == false)
-        result.push("VALUE " + key + " " + HASH_DATA[key].flag.to_s + " " + HASH_DATA[key].length.to_s + "\r\n")
-        result.push(HASH_DATA[key].value + "\r\n")
-    else
-        result.push(error_message_not_found)
-    end
-    return result
-end
-
-##########################################
-def value_getter_cas(key)
-    result = Array.new
-    if (is_expired(key) == false)
-        result.push("VALUE " + key + " " + HASH_DATA[key].flag.to_s + " " + HASH_DATA[key].length.to_s + " " + HASH_DATA[key].cas_number.to_s + "\r\n")
-        result.push(HASH_DATA[key].value + "\r\n")
-    else
-        result.push(error_message_not_found)
-    end
-    return result
-end
-
 
 def handle_command(client_command, data_hash)
     command = client_command[0]
@@ -81,8 +59,8 @@ def get(list_of_keys, data_hash)
         result = Array.new
         values_to_add = Array.new
         list_of_keys.each do |n|
-            if (theres_something(n))
-                values_to_add = value_getter(n)
+            if (STORAGE.theres_something(n))
+                values_to_add = STORAGE.value_getter(n)
                 values_to_add.each do |m|
                     result.push(m)
                 end
@@ -102,8 +80,8 @@ def gets(list_of_keys, data_hash)
         result = Array.new
         values_to_add = Array.new
         list_of_keys.each do |n|
-            if (theres_something(n))
-                values_to_add = value_getter_cas(n)
+            if (STORAGE.theres_something(n))
+                values_to_add = STORAGE.value_getter_cas(n)
                 values_to_add.each do |m|
                     result.push(m)
                 end
@@ -120,7 +98,7 @@ end
 def set(arguments, data_hash)
     its_valid = is_set_valid(arguments)
     if its_valid == true
-        data_hash[arguments[0]] = StoredKey.new(arguments[1], arguments[2], arguments[3], arguments[4])
+        STORAGE.get_hash[arguments[0]] = StoredKey.new(arguments[1], arguments[2], arguments[3], arguments[4])
         result = Array.new
         result.push(message_stored)
         return result
@@ -132,8 +110,8 @@ def add(arguments, data_hash)
     its_valid = is_add_valid(arguments)
     if its_valid == true
         result = Array.new
-        if (theres_something(arguments[0]) == false)
-            data_hash[arguments[0]] = StoredKey.new(arguments[1], arguments[2], arguments[3], arguments[4])
+        if (STORAGE.theres_something(arguments[0]) == false)
+            STORAGE.get_hash[arguments[0]] = StoredKey.new(arguments[1], arguments[2], arguments[3], arguments[4])
             result.push(message_stored)
         else
             result.push(error_message_exists)
@@ -147,13 +125,13 @@ def replace(arguments, data_hash)
     its_valid = is_replace_valid(arguments)
     if its_valid == true
         result = Array.new
-        if (theres_something(arguments[0]) == true)
-            data_hash[arguments[0]].value = arguments[4]
-            data_hash[arguments[0]].flag = arguments[1]
-            data_hash[arguments[0]].expiry = arguments[2]
-            data_hash[arguments[0]].length = arguments[3]
-            data_hash[arguments[0]].updateCreationTime
-            data_hash[arguments[0]].update_cas
+        if (STORAGE.theres_something(arguments[0]) == true)
+            STORAGE.get_hash[arguments[0]].value = arguments[4]
+            STORAGE.get_hash[arguments[0]].flag = arguments[1]
+            STORAGE.get_hash[arguments[0]].expiry = arguments[2]
+            STORAGE.get_hash[arguments[0]].length = arguments[3]
+            STORAGE.get_hash[arguments[0]].updateCreationTime
+            STORAGE.get_hash[arguments[0]].update_cas
             result.push(message_stored)
         else
             result.push(error_message_not_found)
@@ -168,14 +146,14 @@ def append(arguments, data_hash)
     if its_valid == true
         result = Array.new
         data_hash.each do |key,value|
-            if (theres_something(key))
+            if (STORAGE.theres_something(key))
                 if (key == arguments[0])
-                    data_hash[arguments[0]].value = value.value + arguments[4]
-                    data_hash[arguments[0]].flag = arguments[1]
-                    data_hash[arguments[0]].expiry = arguments[2]
-                    data_hash[arguments[0]].length = data_hash[arguments[0]].length.to_i + arguments[3].to_i
-                    data_hash[arguments[0]].updateCreationTime
-                    data_hash[arguments[0]].update_cas
+                    STORAGE.get_hash[arguments[0]].value = value.value + arguments[4]
+                    STORAGE.get_hash[arguments[0]].flag = arguments[1]
+                    STORAGE.get_hash[arguments[0]].expiry = arguments[2]
+                    STORAGE.get_hash[arguments[0]].length = data_hash[arguments[0]].length.to_i + arguments[3].to_i
+                    STORAGE.get_hash[arguments[0]].updateCreationTime
+                    STORAGE.get_hash[arguments[0]].update_cas
                     result.push(message_stored)
                     return result
                 end
@@ -192,14 +170,14 @@ def prepend(arguments, data_hash)
     if its_valid == true
         result = Array.new
         data_hash.each do |key,value|
-            if (theres_something(key))
+            if (STORAGE.theres_something(key))
                 if (key == arguments[0])
-                    data_hash[arguments[0]].value = arguments[4] + value.value
-                    data_hash[arguments[0]].flag = arguments[1]
-                    data_hash[arguments[0]].length = data_hash[arguments[0]].length.to_i + arguments[3].to_i
-                    data_hash[arguments[0]].expiry = arguments[2]
-                    data_hash[arguments[0]].updateCreationTime
-                    data_hash[arguments[0]].update_cas
+                    STORAGE.get_hash[arguments[0]].value = arguments[4] + value.value
+                    STORAGE.get_hash[arguments[0]].flag = arguments[1]
+                    STORAGE.get_hash[arguments[0]].length = data_hash[arguments[0]].length.to_i + arguments[3].to_i
+                    STORAGE.get_hash[arguments[0]].expiry = arguments[2]
+                    STORAGE.get_hash[arguments[0]].updateCreationTime
+                    STORAGE.get_hash[arguments[0]].update_cas
                     result.push(message_stored)
                     return result
                 end
@@ -215,10 +193,10 @@ def cas(arguments, data_hash)
     its_valid = is_cas_valid(arguments)
     if its_valid == true
         result = Array.new
-        if (theres_something(arguments[0]))
-            if (data_hash[arguments[0]].cas_number == arguments[4].to_i)
-                data_hash[arguments[0]].value = arguments[5]
-                data_hash[arguments[0]].update_cas
+        if (STORAGE.theres_something(arguments[0]))
+            if (STORAGE.get_hash[arguments[0]].cas_number == arguments[4].to_i)
+                STORAGE.get_hash[arguments[0]].value = arguments[5]
+                STORAGE.get_hash[arguments[0]].update_cas
                 result.push(message_stored)
             else
                 result.push(error_message_exists)

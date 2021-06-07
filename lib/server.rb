@@ -1,3 +1,12 @@
+require_relative 'collector'
+require_relative 'constants'
+require_relative 'storage'
+require_relative 'validation'
+require_relative 'stored_key'
+require_relative 'message_codes'
+require_relative 'handler'
+
+
 class Server
 
     def initialize(port,lock)

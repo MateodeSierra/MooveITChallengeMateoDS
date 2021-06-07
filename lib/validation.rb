@@ -1,3 +1,11 @@
+require_relative 'collector'
+require_relative 'constants'
+require_relative 'server'
+require_relative 'storage'
+require_relative 'stored_key'
+require_relative 'message_codes'
+require_relative 'handler'
+
 
 def is_data_numbers(client_command)
     if (client_command[1].is_number?)
@@ -21,30 +29,6 @@ def correct_length(value, supposed_length)
         return true
     end
     return false
-end
-
-
-##########################################
-def is_expired(key)
-    current_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
-    if (HASH_DATA[key].expiry.to_i == 0)
-        return false
-    elsif ((HASH_DATA[key].creation_time.to_i + HASH_DATA[key].expiry.to_i) >= current_time)
-        return false
-    end
-    HASH_DATA.delete(key)
-    return true
-end
-
-
-##########################################
-def theres_something(key)
-    if (HASH_DATA[key].nil?)
-        return false
-    elsif (is_expired(key))
-        return false
-    end
-    return true
 end
 
 def is_get_valid(arguments)
