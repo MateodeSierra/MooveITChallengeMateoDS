@@ -23,6 +23,8 @@ def correct_length(value, supposed_length)
     return false
 end
 
+
+##########################################
 def is_expired(key)
     current_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
     if (HASH_DATA[key].expiry.to_i == 0)
@@ -34,6 +36,8 @@ def is_expired(key)
     return true
 end
 
+
+##########################################
 def theres_something(key)
     if (HASH_DATA[key].nil?)
         return false

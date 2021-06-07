@@ -3,11 +3,10 @@ class Server
     def initialize(port,lock)
         @port = port
         @lock = lock
-        @server = TCPServer.new('localhost', @port)
     end
 
     def start_server()
-        
+        @server = TCPServer.new('localhost', @port)
         puts("MooveIT Challenge, by Mateo de Sierra")
         puts("Server is online, listening on port #{SERVER_PORT}")
         puts("To take down the server press CTRL + C")

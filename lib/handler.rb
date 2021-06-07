@@ -19,6 +19,8 @@ COMMANDS = [
 
 HASH_DATA = {}
 
+
+##########################################
 def value_getter(key)
     result = Array.new
     if (is_expired(key) == false)
@@ -30,6 +32,7 @@ def value_getter(key)
     return result
 end
 
+##########################################
 def value_getter_cas(key)
     result = Array.new
     if (is_expired(key) == false)
@@ -59,7 +62,7 @@ def handle_command(client_command, data_hash)
         elsif command == "append"
             return append(arguments, data_hash)
         elsif command == "prepend"
-            return prependd(arguments, data_hash)
+            return prepend(arguments, data_hash)
         elsif command == "cas"
             return cas(arguments, data_hash)
         elsif command == "exit"
@@ -184,7 +187,7 @@ def append(arguments, data_hash)
     return its_valid
 end
 
-def prependd(arguments, data_hash)
+def prepend(arguments, data_hash)
     its_valid = is_prepend_valid(arguments)
     if its_valid == true
         result = Array.new
