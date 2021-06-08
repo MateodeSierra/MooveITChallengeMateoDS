@@ -10,7 +10,7 @@ require 'socket'
 require 'time'
 require 'Monitor'
 
-STORAGE = Storage.new
+STORAGE = Storage.new()
 lock = Monitor.new
 collector = Collector.new(COLLECTOR_INTERVAL,lock)
 collector.every_n_seconds()

@@ -40,26 +40,17 @@ def is_get_valid(arguments)
     return true
 end
 
-def is_gets_valid(arguments)
-    log_message = Array.new
-    if (arguments.length < 1)
-        log_message.push(error_message_error())
-        return log_message
-    end
-    return true
-end
-
 def is_set_valid(arguments)
     log_message = Array.new
     if (is_data_numbers(arguments) == false)
         log_message.push(error_message_error())
-        return log_message
+        return false
     elsif (arguments.length != 5)
         log_message.push(error_message_error())
-        return log_message
+        return false
     elsif (correct_length(arguments[4], arguments[3]) == false)
         log_message.push(error_message_error())
-        return log_message
+        return false
     end
     return true
 end

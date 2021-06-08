@@ -16,26 +16,33 @@ class Storage
         @storage
     end
 
-    def value_getter(key)
-        result = Array.new
-        if (is_expired(key) == false)
-            result.push("VALUE " + key + " " + @storage[key].flag.to_s + " " + @storage[key].length.to_s + "\r\n")
-            result.push(@storage[key].value + "\r\n")
-        else
-            result.push(error_message_not_found)
-        end
-        return result
+    def get(key)
+        return @storage[key]
     end
 
-    def value_getter_cas(key)
-        result = Array.new
-        if (is_expired(key) == false)
-            result.push("VALUE " + key + " " + @storage[key].flag.to_s + " " + @storage[key].length.to_s + " " + @storage[key].cas_number.to_s + "\r\n")
-            result.push(@storage[key].value + "\r\n")
-        else
-            result.push(error_message_not_found)
-        end
-        return result
+    def set(key, flag, expiry, length, value)
+        @storage[key] = StoredKey.new(flag, expiry, length, value)
+    end
+
+    def replace(key, flag, expiry, length, value)
+        @storage.delete(key)
+        @storage.push(StoredKey.new(flag, expiry, length, value))
+    end
+
+    def append(key, flag, expiry, length, value)
+        old_value = @storage[key].value
+        @storage.delete(key)
+        new_key = StoredKey.new(flag, expiry, length, value)
+        @storage.push(new_key)
+        new_key.value = old_value + new_key.value
+    end
+
+    def prepend(key, flag, expiry, length, value)
+        old_value = @storage[key].value
+        @storage.delete(key)
+        new_key = StoredKey.new(flag, expiry, length, value)
+        @storage.push(new_key)
+        new_key.value = new_key.value + old_value
     end
 
     def is_expired(key)
