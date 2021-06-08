@@ -84,7 +84,7 @@ def switch_get(key, bool)
     end
 end
 
-# arguments[] format is (key, flag, expiry, length, value)
+# arguments[] format is ([0]key, [1]flag, [2]expiry, [3]length, [4]value)
 def set(arguments)
     result = Array.new
     if is_set_valid(arguments)
@@ -98,7 +98,7 @@ def set(arguments)
     return message_stored
 end
 
-# arguments[] format is (key, flag, expiry, length, value)
+# arguments[] format is ([0]key, [1]flag, [2]expiry, [3]length, [4]value)
 def add(arguments)
     if is_add_valid(arguments)
         result = Array.new
@@ -113,7 +113,7 @@ def add(arguments)
     return its_valid
 end
 
-# arguments[] format is (key, flag, expiry, length, value)
+# arguments[] format is ([0]key, [1]flag, [2]expiry, [3]length, [4]value)
 def replace(arguments)
     its_valid = is_replace_valid(arguments)
     if its_valid == true
@@ -130,7 +130,7 @@ def replace(arguments)
     return its_valid
 end
 
-# arguments[] format is (key, flag, expiry, length, value)
+# arguments[] format is ([0]key, [1]flag, [2]expiry, [3]length, [4]value)
 def append(arguments)
     its_valid = is_append_valid(arguments)
     if its_valid == true
@@ -151,7 +151,7 @@ def append(arguments)
     return its_valid
 end
 
-# arguments[] format is (key, flag, expiry, length, value)
+# arguments[] format is ([0]key, [1]flag, [2]expiry, [3]length, [4]value)
 def prepend(arguments)
     its_valid = is_prepend_valid(arguments)
     if its_valid == true
@@ -172,7 +172,7 @@ def prepend(arguments)
     return its_valid
 end
 
-# arguments[] format is (key, flag, expiry, length, value)
+# arguments[] format is ([0]key, [1]flag, [2]expiry, [3]length, [4]casnumber, [5]value)
 def cas(arguments)
     its_valid = is_cas_valid(arguments)
     if its_valid == true
