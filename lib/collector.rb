@@ -22,9 +22,9 @@ class Collector
     end
 
     def clear_expired()
-        HASH_DATA.each do |key,value|
-            if is_expired(key)
-                HASH_DATA.delete(key)
+        STORAGE.get_hash.each do |key,value|
+            if STORAGE.is_expired(key)
+                STORAGE.get_hash.delete(key)
             end
         end
     end

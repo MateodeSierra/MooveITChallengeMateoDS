@@ -180,7 +180,7 @@ def cas(arguments)
         if (STORAGE.theres_something(arguments[0]))
             if (STORAGE.get_hash[arguments[0]].cas_number == arguments[4].to_i)
                 STORAGE.get_hash[arguments[0]].value = arguments[5]
-                STORAGE.get_hash[arguments[0]].update_cas
+                update_key_data(arguments[0], arguments[1], arguments[2], arguments[3], false)
                 result.push(message_stored)
             else
                 result.push(error_message_exists)
